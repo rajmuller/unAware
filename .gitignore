@@ -6,6 +6,21 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+.env*
+variables.env*
+
+node_modules/
+.DS_Store
+*.log
+haters/
+.next/
+.build/
+layout.md
+variables.env
+.vscode
+.eslint
+.eslintrc
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 

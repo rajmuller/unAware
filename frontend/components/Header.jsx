@@ -1,6 +1,6 @@
-import Nav from './Nav';
 import Link from 'next/link';
 import styled from 'styled-components';
+import Nav from './Nav';
 
 const NavBar = styled.div`
     border-bottom: 10px solid ${({ theme }) => theme.black};
@@ -18,7 +18,7 @@ const NavBar = styled.div`
 const SearchBar = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
-    border-bottom: 1px solid ${({ theme }) => theme.lightGrey};
+    border-bottom: 1px solid ${({ theme }) => theme.black};
 `;
 
 const Logo = styled.h1`
@@ -43,7 +43,7 @@ const Logo = styled.h1`
 `;
 
 const Header = () => (
-    <React.Fragment>
+    <>
         <NavBar className='bar'>
             <Logo>
                 <Link href='/'>
@@ -56,7 +56,7 @@ const Header = () => (
             <p>Search</p>
         </SearchBar>
         <div>Cart</div>
-    </React.Fragment>
+    </>
 );
 
 export default Header;

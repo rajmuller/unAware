@@ -1,7 +1,8 @@
-import React from 'react';
-import Meta from '../components/Meta';
-import Header from '../components/Header';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import propTypes from 'prop-types';
+import React from 'react';
+import Meta from './Meta';
+import Header from './Header';
 
 const theme = {
     red: '#FF0000',
@@ -15,11 +16,11 @@ const theme = {
 
 const PageContainer = styled.div`
     background: white;
-    color: ${({ theme }) => theme.black};
+    color: ${props => props.theme.black};
 `;
 
 const InnerContainer = styled.div`
-    max-width: ${({ theme }) => theme.maxWidth};
+    max-width: ${props => props.theme.maxWidth};
     margin: 0 auto;
     padding: 2rem;
 `;
@@ -36,6 +37,10 @@ const Page = ({ children }) => {
             </PageContainer>
         </ThemeProvider>
     );
+};
+
+Page.propTypes = {
+    children: propTypes.object
 };
 
 export default Page;

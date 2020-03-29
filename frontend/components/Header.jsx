@@ -1,9 +1,20 @@
 import Link from 'next/link';
+import Router from 'next/router';
+import NProgress from 'nprogress';
 import styled from 'styled-components';
 import Nav from './Nav';
 
+Router.events.on('routeChangeStart', url => {
+    console.log(`Loading: ${url}`);
+    NProgress.start();
+});
+Router.events.on('routeChangeComplete', () => {
+    console.log('completed');
+});
+Router.events.on('routeChangeError', () => NProgress.done());
+
 const NavBar = styled.div`
-    border-bottom: 10px solid ${({ theme }) => theme.black};
+    border-bottom: 10px solid ${props => props.theme.black};
     display: grid;
     grid-template-columns: auto 1fr;
     justify-content: space-between;
@@ -18,7 +29,7 @@ const NavBar = styled.div`
 const SearchBar = styled.div`
     display: grid;
     grid-template-columns: 1fr auto;
-    border-bottom: 1px solid ${({ theme }) => theme.black};
+    border-bottom: 1px solid ${props => props.theme.black};
 `;
 
 const Logo = styled.h1`

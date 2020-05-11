@@ -1,13 +1,13 @@
 import Layout from "../components/Layout";
 import NavLink from "../components/NavLink";
 
-const Index = () => {
+const Sell = () => {
   return (
     <Layout>
-      <div>index vagyok</div>
-      <NavLink href="/sell">to sell</NavLink>
+      <div>sell vagyok</div>
+      <NavLink href="/">to home</NavLink>
     </Layout>
   );
 };
 
-export default Index;
+export default Sell;

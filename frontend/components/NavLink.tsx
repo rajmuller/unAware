@@ -8,11 +8,8 @@ const A = styled.a`
   justify-content: center;
   align-items: center;
   text-decoration: none;
-  padding: 0.5rem 1rem;
-  text-transform: uppercase;
   background: none;
   border: none;
-  border-radius: 3px;
 
   ${({ active }: { active: boolean }) =>
     active &&

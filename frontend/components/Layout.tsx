@@ -5,13 +5,25 @@ import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
 import Meta from "./Meta";
 import Header from "./Header";
 
+const theme = {
+  red: "#FF0000",
+  black: "#393939",
+  grey: "#3A3A3A",
+  lightGrey: "#a0a0a0",
+  offWhite: "#EDEDED",
+  maxWidth: "1200px",
+  bs: "0 12px 24px 0 rgba(0, 0, 0, 0.09)",
+};
+
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-      font-family: 'radnika_next';
-      src: url("../public/radnikanext-medium-webfont.woff2") format('woff2');
-      font-weight: normal;
-      font-style: normal;
-  }
+  //@font-face {
+  //  font-family: "radnika";
+  //  src:  
+  //    url("/fonts/radnikanext-medium-webfont.woff2") format("woff2");
+  //  font-display: auto;
+  //  font-weight: normal;
+  //  font-style: normal;
+  //}
 
   html {
     box-sizing: border-box;
@@ -27,25 +39,15 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     font-size: 1.5rem;
     line-height: 2;
-    font-family: 'radnika_next';
+    font-weight: 500;
+    font-family: "radnika", "Mitr", sans-serif;
   }
 
   a {
     text-decoration: none;
-    // @ts-ignore
-    color: ${({ theme }) => theme.black};
+    color: ${theme.black};
   }
 `;
-
-const theme = {
-  red: "#FF0000",
-  black: "#393939",
-  grey: "#3A3A3A",
-  lightGrey: "#a0a0a0",
-  offWhite: "#EDEDED",
-  maxWidth: "1200px",
-  bs: "0 12px 24px 0 rgba(0, 0, 0, 0.09)",
-};
 
 const Container = styled.div`
   background: white;
@@ -62,8 +64,8 @@ const Layout: FC = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
+      <Meta />
       <Container>
-        <Meta />
         <Header />
         <InnerContainer>{children}</InnerContainer>
       </Container>
@@ -72,7 +74,10 @@ const Layout: FC = ({ children }) => {
 };
 
 Layout.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
 };
 
 export default Layout;

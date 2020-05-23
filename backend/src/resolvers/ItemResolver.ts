@@ -4,7 +4,7 @@ import { Item } from "../entity/Item";
 @Resolver()
 export class ItemResolver {
   @Query(() => [Item])
-  async getAllItems() {
+  async items() {
     return await Item.find();
   }
 

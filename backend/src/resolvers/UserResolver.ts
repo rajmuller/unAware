@@ -9,6 +9,7 @@ import {
   UseMiddleware,
 } from "type-graphql";
 import { hash, compare } from "bcryptjs";
+import { verify } from "jsonwebtoken";
 
 import { User } from "../entity/User";
 import { MyContext } from "../MyContext";
@@ -23,25 +24,45 @@ import { sendRefreshToken } from "../authentication/sendRefreshToken";
 class LoginResponse {
   @Field()
   accessToken: string;
+  @Field(() => User)
+  user: User;
 }
 
 @Resolver()
 export class UserResolver {
   @Query(() => String)
   @UseMiddleware(isAuth)
-  amILoggedIn(@Ctx() { payload }: MyContext) {
+  isLoggedIn(@Ctx() { payload }: MyContext) {
     console.log("payload: ", payload);
     return `your user id is ${payload!.userId}`;
   }
 
   @Query(() => String)
-  getHi() {
-    return "HI";
+  hello() {
+    return "hello te kis zseni developer";
   }
 
   @Query(() => [User])
-  async getAllUsers() {
+  async users() {
     return await User.find();
+  }
+
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() context: MyContext) {
+    const authorization = context.req.headers["authorization"];
+
+    if (!authorization) {
+      return null;
+    }
+
+    try {
+      const token = authorization.split(" ")[1];
+      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      return User.findOne(payload.userId);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 
   @Mutation(() => Boolean)
@@ -71,14 +92,13 @@ export class UserResolver {
   ): Promise<LoginResponse> {
     const user = await User.findOne({ where: { email } });
 
-    //TODO: homogenize error messages
     if (!user) {
-      throw new Error("No user found");
+      throw new Error("invalid username or password");
     }
 
     const isPasswordValid = await compare(password, user.password);
     if (!isPasswordValid) {
-      throw new Error("Invalid password");
+      throw new Error("invalid username or password");
     }
 
     // Successful login
@@ -87,6 +107,14 @@ export class UserResolver {
 
     return {
       accessToken: createAccessToken(user),
+      user,
     };
+  }
+
+  @Mutation(() => Boolean)
+  async logoutUser(@Ctx() { res }: MyContext): Promise<boolean> {
+    sendRefreshToken(res, "");
+
+    return true;
   }
 }

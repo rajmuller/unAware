@@ -16,13 +16,16 @@ import { sendRefreshToken } from "./authentication/sendRefreshToken";
 
 (async () => {
   const app = express();
-  app.use(cookieParser());
+  app.use("/refresh_token", cookieParser());
   app.use(
     cors({
       origin: process.env.FRONTEND_URL,
+      credentials: true,
     })
   );
   app.get("/", (_req, res) => res.send("hello"));
+
+  app.get("/test", (_req, res) => res.send({ test: "test" }));
 
   app.post("/refresh_token", async (req, res) => {
     const token = req.cookies.jid;
@@ -65,9 +68,9 @@ import { sendRefreshToken } from "./authentication/sendRefreshToken";
     context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => {
-    console.log(`express backend started on http://localhost:4000`);
+    console.log(`graphql backend started on http://localhost:4000/graphql`);
   });
 })();

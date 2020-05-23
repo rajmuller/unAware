@@ -1,0 +1,39 @@
+mutation registerUser($email: String!, $password: String!){
+  registerUser(email: $email, password: $password)
+}
+
+mutation loginUser($email: String!, $password: String!){
+  loginUser(email: $email, password: $password) {
+    accessToken
+    user {
+      id
+      email
+    }
+  }
+}
+
+mutation logoutUser {
+  logoutUser
+}
+
+query users {
+  users {
+    id
+    email
+  }
+}
+
+query me {
+  me {
+    id
+    email
+  }
+}
+
+query isLoggedIn{
+  isLoggedIn
+}
+
+query hello {
+  hello
+}

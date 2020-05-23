@@ -1,13 +1,34 @@
-import Layout from "../components/Layout";
-import NavLink from "../components/NavLink";
+import { FC } from "react";
+import { useMeQuery, useUsersQuery } from "../graphql/generated/graphql";
+import { withApollo } from "../lib/withApollo";
 
-const Index = () => {
+const Index: FC = () => {
+  const { data, loading } = useUsersQuery({ fetchPolicy: "cache-and-network" });
+  const { data: meData } = useMeQuery();
+
+  if (loading || !data) {
+    return <div>loading...</div>;
+  }
+
   return (
-    <Layout>
+    <>
       <div>index vagyok</div>
-      <NavLink href="/sell">to sell</NavLink>
-    </Layout>
+      <ul>
+        {data.users.map((user) => {
+          return (
+            <li key={user.id}>
+              userId: {user.id} | email: {user.email}
+            </li>
+          );
+        })}
+      </ul>
+      <h1>
+        {meData?.me?.id}
+        <br />
+        {meData?.me?.email}
+      </h1>
+    </>
   );
 };
 
-export default Index;
+export default withApollo()(Index);

@@ -46,7 +46,7 @@ const Logo = styled.h1`
   @media (max-width: 1300px) {
     text-align: center;
     display: block;
-    margin: auto;
+    margin: auto auto 1rem;
 
     a {
       padding: 0 1.5rem;

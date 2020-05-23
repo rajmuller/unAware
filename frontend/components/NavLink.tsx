@@ -23,10 +23,8 @@ const NavLink: FC<{ href: string }> = ({ href, children }) => {
   const active = router.pathname === href;
 
   return (
-    <Link href={href}>
-      <A href={href} active={active}>
-        {children}
-      </A>
+    <Link href={href} passHref>
+      <A active={active}>{children}</A>
     </Link>
   );
 };

@@ -9,7 +9,6 @@ package-lock.json
 
 .env*
 variables.env*
-.*
 
 node_modules/
 .DS_Store
@@ -115,5 +114,3 @@ dist
 
 # TernJS port file
 .tern-port
-frontend/package-lock.json
-frontend/package-lock.json

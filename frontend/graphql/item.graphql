@@ -1,0 +1,26 @@
+query items {
+  items {
+    id
+    title
+    description
+    price
+    createdDate
+    updatedDate
+    image
+    largeImage
+    user {
+      id
+      email
+    }
+  }
+}
+
+#mutation createItem {
+#  createItem(
+#    title: "test2"
+#    description: "test2 description"
+#    image: "test2 image"
+#    largeImage: "test2 largeImage"
+#    price: 2000
+#  )
+#}

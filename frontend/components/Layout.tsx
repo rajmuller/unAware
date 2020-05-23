@@ -47,6 +47,10 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: ${theme.black};
   }
+  
+  li {
+    list-style: none;
+  }
 `;
 
 const Container = styled.div`

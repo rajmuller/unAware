@@ -5,6 +5,7 @@ module.exports = {
     "react/jsx-props-no-spreading": "off",
     "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
+    "import/prefer-default-export": "off",
     "jsx-a11y/anchor-is-valid": [
       "error",
       {

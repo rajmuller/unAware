@@ -24,14 +24,14 @@ export const ItemStyles = styled.div`
 export const ButtonList = styled.div`
   display: grid;
   width: 100%;
-  border-top: 1px solid ${(props) => props.theme.lightgrey};
+  border-top: 1px solid ${({ theme }) => theme.lightgrey};
   grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   grid-gap: 1px;
-  background: ${(props) => props.theme.lightgrey};
+  background: ${({ theme }) => theme.lightGrey};
   & > * {
     background: white;
     border: 0;
-    font-size: 1rem;
+    font-size: 1.3rem;
     padding: 1rem;
   }
 `;

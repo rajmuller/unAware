@@ -1,6 +1,7 @@
 import { FC } from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { Edit } from "react-ikonate";
 import { Title, ItemStyles, PriceTag, ButtonList } from "./styles";
 import formatMoney from "../utils/formatMoney";
 
@@ -28,6 +29,7 @@ type ItemProps = {
 const Item: FC<ItemProps> = ({ item }) => {
   return (
     <ItemStyles>
+      {item.image && <img alt={item.title} src={item.image} />}
       <Title>
         <Link href={{ pathname: "/item", query: { id: item.id } }}>
           <a>{item.title}</a>
@@ -38,8 +40,12 @@ const Item: FC<ItemProps> = ({ item }) => {
 
       <ButtonList>
         <Link href={{ pathname: "update", query: { id: item.id } }}>
-          <a>Edit</a>
+          <a>
+            Edit <Edit />
+          </a>
         </Link>
+        <button type="button">Add To Cart</button>
+        <button type="button">Delete</button>
       </ButtonList>
     </ItemStyles>
   );

@@ -8,25 +8,26 @@ export class ItemResolver {
     return await Item.find();
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async createItem(
     @Arg("title") title: string,
     @Arg("description") description: string,
     @Arg("price") price: number,
-    @Arg("image") image: string,
-    @Arg("largeImage") largeImage: string
+    @Arg("image", { nullable: true }) image: string,
+    @Arg("largeImage", { nullable: true }) largeImage: string
   ) {
     try {
-      await Item.insert({
+      const item = await Item.insert({
         title,
         description,
         price,
         image,
         largeImage,
       });
-      return true;
+      console.log(item.identifiers[0].id);
+      return item.identifiers[0].id;
     } catch (e) {
-      console.log(e);
+      console.log("MEGDOGLOTT: ", e);
       return false;
     }
   }

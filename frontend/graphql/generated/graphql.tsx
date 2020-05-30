@@ -38,7 +38,7 @@ export type Mutation = {
   registerUser: Scalars['Boolean'];
   loginUser: LoginResponse;
   logoutUser: Scalars['Boolean'];
-  createItem: Scalars['Boolean'];
+  createItem: Item;
 };
 
 
@@ -55,8 +55,8 @@ export type MutationLoginUserArgs = {
 
 
 export type MutationCreateItemArgs = {
-  largeImage: Scalars['String'];
-  image: Scalars['String'];
+  largeImage?: Maybe<Scalars['String']>;
+  image?: Maybe<Scalars['String']>;
   price: Scalars['Float'];
   description: Scalars['String'];
   title: Scalars['String'];
@@ -91,6 +91,23 @@ export type ItemsQuery = (
       & Pick<User, 'id' | 'email'>
     )> }
   )> }
+);
+
+export type CreateItemMutationVariables = {
+  title: Scalars['String'];
+  price: Scalars['Float'];
+  description: Scalars['String'];
+  image?: Maybe<Scalars['String']>;
+  largeImage?: Maybe<Scalars['String']>;
+};
+
+
+export type CreateItemMutation = (
+  { __typename?: 'Mutation' }
+  & { createItem: (
+    { __typename?: 'Item' }
+    & Pick<Item, 'title' | 'image'>
+  ) }
 );
 
 export type RegisterUserMutationVariables = {
@@ -212,6 +229,43 @@ export function useItemsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type ItemsQueryHookResult = ReturnType<typeof useItemsQuery>;
 export type ItemsLazyQueryHookResult = ReturnType<typeof useItemsLazyQuery>;
 export type ItemsQueryResult = ApolloReactCommon.QueryResult<ItemsQuery, ItemsQueryVariables>;
+export const CreateItemDocument = gql`
+    mutation createItem($title: String!, $price: Float!, $description: String!, $image: String, $largeImage: String) {
+  createItem(title: $title, price: $price, description: $description, image: $image, largeImage: $largeImage) {
+    title
+    image
+  }
+}
+    `;
+export type CreateItemMutationFn = ApolloReactCommon.MutationFunction<CreateItemMutation, CreateItemMutationVariables>;
+
+/**
+ * __useCreateItemMutation__
+ *
+ * To run a mutation, you first call `useCreateItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createItemMutation, { data, loading, error }] = useCreateItemMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      price: // value for 'price'
+ *      description: // value for 'description'
+ *      image: // value for 'image'
+ *      largeImage: // value for 'largeImage'
+ *   },
+ * });
+ */
+export function useCreateItemMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateItemMutation, CreateItemMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateItemMutation, CreateItemMutationVariables>(CreateItemDocument, baseOptions);
+      }
+export type CreateItemMutationHookResult = ReturnType<typeof useCreateItemMutation>;
+export type CreateItemMutationResult = ApolloReactCommon.MutationResult<CreateItemMutation>;
+export type CreateItemMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateItemMutation, CreateItemMutationVariables>;
 export const RegisterUserDocument = gql`
     mutation registerUser($email: String!, $password: String!) {
   registerUser(email: $email, password: $password)

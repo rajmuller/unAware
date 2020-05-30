@@ -8,7 +8,7 @@ export class ItemResolver {
     return await Item.find();
   }
 
-  @Mutation(() => String)
+  @Mutation(() => Item)
   async createItem(
     @Arg("title") title: string,
     @Arg("description") description: string,
@@ -17,18 +17,18 @@ export class ItemResolver {
     @Arg("largeImage", { nullable: true }) largeImage: string
   ) {
     try {
-      const item = await Item.insert({
+      const item = await Item.create({
         title,
         description,
         price,
         image,
         largeImage,
-      });
-      console.log(item.identifiers[0].id);
-      return item.identifiers[0].id;
+      }).save();
+      console.log(item);
+      return item;
     } catch (e) {
-      console.log("MEGDOGLOTT: ", e);
-      return false;
+      console.log(e);
+      return e;
     }
   }
 }

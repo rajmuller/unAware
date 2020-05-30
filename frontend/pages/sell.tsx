@@ -1,13 +1,8 @@
-import Layout from "../components/Layout";
-import NavLink from "../components/NavLink";
+import CreateItem from "../components/CreateItem";
+import { withApollo } from "../lib/withApollo";
 
 const Sell = () => {
-  return (
-    <Layout>
-      <div>sell vagyok</div>
-      <NavLink href="/">to home</NavLink>
-    </Layout>
-  );
+  return <CreateItem />;
 };
 
-export default Sell;
+export default withApollo()(Sell);

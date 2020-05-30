@@ -15,12 +15,21 @@ query items {
   }
 }
 
-#mutation createItem {
-#  createItem(
-#    title: "test2"
-#    description: "test2 description"
-#    image: "test2 image"
-#    largeImage: "test2 largeImage"
-#    price: 2000
-#  )
-#}
+mutation createItem(
+  $title: String!
+  $price: Float!
+  $description: String!
+  $image: String
+  $largeImage: String
+) {
+  createItem(
+    title: $title
+    price: $price
+    description: $description
+    image: $image
+    largeImage: $largeImage
+  ) {
+    title
+    image
+  }
+}

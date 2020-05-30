@@ -19,19 +19,19 @@ export class Item extends BaseEntity {
   id: string;
 
   @Field()
-  @Column("text")
+  @Column("text", { unique: true })
   title: string;
 
   @Field()
   @Column("text")
   description: string;
 
-  @Field({ nullable: true })
-  @Column("text", { nullable: true })
+  @Field()
+  @Column("text")
   image: string;
 
-  @Field({ nullable: true })
-  @Column("text", { nullable: true })
+  @Field()
+  @Column("text")
   largeImage: string;
 
   @Field()
@@ -47,6 +47,6 @@ export class Item extends BaseEntity {
   updatedDate: Date;
 
   @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, (user) => user.items)
+  @ManyToOne(() => User, (user) => user.items, { nullable: true })
   user: User;
 }

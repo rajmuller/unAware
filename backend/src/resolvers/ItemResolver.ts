@@ -1,5 +1,6 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { Item } from "../entity/Item";
+import { CreateItemInput, UpdateItemInput } from "./types/itemInput";
 
 @Resolver()
 export class ItemResolver {
@@ -8,21 +9,16 @@ export class ItemResolver {
     return await Item.find();
   }
 
+  @Query(() => Item)
+  async item(@Arg("id") id: string) {
+    return await Item.findOne(id);
+  }
+
   @Mutation(() => Item)
-  async createItem(
-    @Arg("title") title: string,
-    @Arg("description") description: string,
-    @Arg("price") price: number,
-    @Arg("image", { nullable: true }) image: string,
-    @Arg("largeImage", { nullable: true }) largeImage: string
-  ) {
+  async createItem(@Arg("data") createItemData: CreateItemInput) {
     try {
       const item = await Item.create({
-        title,
-        description,
-        price,
-        image,
-        largeImage,
+        ...createItemData,
       }).save();
       console.log(item);
       return item;
@@ -30,5 +26,28 @@ export class ItemResolver {
       console.log(e);
       return e;
     }
+  }
+
+  @Mutation(() => Item, { nullable: true })
+  async updateItem(
+    @Arg("data") { title, price, description, id }: UpdateItemInput
+  ): Promise<Item | null> {
+    const item = await Item.findOne(id);
+    console.log(item);
+    if (!item) {
+      return null;
+    }
+
+    if (title) {
+      item.title = title;
+    }
+    if (description) {
+      item.description = description;
+    }
+    if (price) {
+      item.price = price;
+    }
+    await item.save();
+    return item;
   }
 }

@@ -23,16 +23,25 @@ const Items: FC<ItemsProps> = () => {
     return <div>loading...</div>;
   }
 
+  const asd = data.items.sort(
+    (a, b) =>
+      new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
+  );
+
+  console.log(asd);
+
   return (
     <CenterContainer>
       <ItemsList>
-        {data.items.map((item) => {
-          return (
-            <li key={item.id}>
-              <Item item={item} />
-            </li>
-          );
-        })}
+        {data.items
+          .sort((a, b) => a.createdDate - b.createdDate)
+          .map((item) => {
+            return (
+              <li key={item.id}>
+                <Item item={item} />
+              </li>
+            );
+          })}
       </ItemsList>
     </CenterContainer>
   );

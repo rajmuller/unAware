@@ -15,6 +15,23 @@ query items {
   }
 }
 
+query item($id: String!) {
+  item(id: $id) {
+    id
+    title
+    description
+    price
+    createdDate
+    updatedDate
+    image
+    largeImage
+    user {
+      id
+      email
+    }
+  }
+}
+
 mutation createItem(
   $title: String!
   $price: Float!
@@ -23,13 +40,35 @@ mutation createItem(
   $largeImage: String
 ) {
   createItem(
-    title: $title
-    price: $price
-    description: $description
-    image: $image
-    largeImage: $largeImage
+    data: {
+      title: $title
+      price: $price
+      description: $description
+      image: $image
+      largeImage: $largeImage
+    }
   ) {
+    id
     title
     image
   }
+}
+
+mutation updateItem(
+  $id: String!
+  $title: String
+  $description: String
+  $price: Float
+) {
+  updateItem(
+    data: { id: $id, title: $title, description: $description, price: $price }
+  ) {
+    title
+    description
+    price
+  }
+}
+
+mutation deleteItem($id: String!) {
+  deleteItem(id: $id)
 }

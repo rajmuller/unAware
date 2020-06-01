@@ -2,8 +2,10 @@ import { FC } from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import { Edit } from "react-ikonate";
-import { Title, ItemStyles, PriceTag, ButtonList } from "./styles";
+
 import formatMoney from "../utils/formatMoney";
+import { Title, ItemStyles, PriceTag, ButtonList } from "./styles";
+import DeleteItem from "./DeleteItem";
 
 type User = {
   id: string;
@@ -39,13 +41,13 @@ const Item: FC<ItemProps> = ({ item }) => {
       <p>{item.description}</p>
 
       <ButtonList>
-        <Link href={{ pathname: "update", query: { id: item.id } }}>
+        <Link href="/update/[itemId]" as={`/update/${item.id}`}>
           <a>
             Edit <Edit />
           </a>
         </Link>
         <button type="button">Add To Cart</button>
-        <button type="button">Delete</button>
+        <DeleteItem itemId={item.id} />
       </ButtonList>
     </ItemStyles>
   );

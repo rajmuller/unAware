@@ -1,15 +1,18 @@
-import { FC, useCallback, useState } from "react";
-import { useRouter } from "next/router";
+import { FC, SyntheticEvent, useCallback, useState } from "react";
+// import { useRouter } from "next/router";
 
 // import formatMoney from "../utils/formatMoney";
-import { useCreateItemMutation } from "../graphql/generated/graphql";
+import {
+  ItemsDocument,
+  useCreateItemMutation,
+} from "../graphql/generated/graphql";
 import { usePersistentState } from "../hooks";
 import { Form } from "./styles";
 
 type CreateItemProps = {};
 
 const CreateItem: FC<CreateItemProps> = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const [createItem, { loading }] = useCreateItemMutation();
   const [form, setForm] = usePersistentState("sellForm", {
     title: "",
@@ -32,42 +35,54 @@ const CreateItem: FC<CreateItemProps> = () => {
     [form, setForm]
   );
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      const { price, title, description } = form;
-      const res = await createItem({
-        variables: { price, title, description, image, largeImage },
-      });
-      console.log(res);
-      if (res) {
-        await router.push(`/item/${title}`);
-      }
-    },
-    [form, createItem]
-  );
-
   const handleUploadImage = useCallback(async (e) => {
-    setIsUploading(true);
     const { files } = e.target;
+    if (!files) {
+      return;
+    }
+    setIsUploading(true);
     const data = new FormData();
     data.append("file", files[0]);
     data.append("upload_preset", "unAware");
 
     const res = await fetch(
+      // TODO: implement signed upload
       "https://api.cloudinary.com/v1_1/dmneguw7w/image/upload",
       { method: "POST", body: data }
     );
+    if (!res.ok) {
+      setIsUploading(false);
+      return;
+    }
     const file = await res.json();
-    console.log(file);
+    if (file === "error") {
+      return;
+    }
     setImage(file.secure_url);
     setLargeImage(file.eager[0].secure_url);
     setIsUploading(false);
   }, []);
 
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    const { price, title, description } = form;
+    const res = await createItem({
+      variables: { price, title, description, image, largeImage },
+      refetchQueries: [{ query: ItemsDocument }],
+    });
+    console.log(res);
+    if (res) {
+      localStorage.removeItem("sellForm");
+      // await router.push(`/item/${title}`);
+    }
+  };
+
   return (
     <Form onSubmit={handleSubmit}>
-      <fieldset disabled={loading || isUploading} aria-busy={loading}>
+      <fieldset
+        disabled={loading || isUploading}
+        aria-busy={loading || isUploading}
+      >
         <label htmlFor="title">
           Title
           <input

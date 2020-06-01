@@ -13,6 +13,14 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type CreateItemInput = {
+  title: Scalars['String'];
+  description: Scalars['String'];
+  price: Scalars['Float'];
+  image?: Maybe<Scalars['String']>;
+  largeImage?: Maybe<Scalars['String']>;
+};
+
 
 export type Item = {
    __typename?: 'Item';
@@ -39,6 +47,8 @@ export type Mutation = {
   loginUser: LoginResponse;
   logoutUser: Scalars['Boolean'];
   createItem: Item;
+  updateItem?: Maybe<Item>;
+  deleteItem: Scalars['Boolean'];
 };
 
 
@@ -55,11 +65,17 @@ export type MutationLoginUserArgs = {
 
 
 export type MutationCreateItemArgs = {
-  largeImage?: Maybe<Scalars['String']>;
-  image?: Maybe<Scalars['String']>;
-  price: Scalars['Float'];
-  description: Scalars['String'];
-  title: Scalars['String'];
+  data: CreateItemInput;
+};
+
+
+export type MutationUpdateItemArgs = {
+  data: UpdateItemInput;
+};
+
+
+export type MutationDeleteItemArgs = {
+  id: Scalars['String'];
 };
 
 export type Query = {
@@ -69,6 +85,19 @@ export type Query = {
   users: Array<User>;
   me?: Maybe<User>;
   items: Array<Item>;
+  item: Item;
+};
+
+
+export type QueryItemArgs = {
+  id: Scalars['String'];
+};
+
+export type UpdateItemInput = {
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
 };
 
 export type User = {
@@ -93,6 +122,23 @@ export type ItemsQuery = (
   )> }
 );
 
+export type ItemQueryVariables = {
+  id: Scalars['String'];
+};
+
+
+export type ItemQuery = (
+  { __typename?: 'Query' }
+  & { item: (
+    { __typename?: 'Item' }
+    & Pick<Item, 'id' | 'title' | 'description' | 'price' | 'createdDate' | 'updatedDate' | 'image' | 'largeImage'>
+    & { user?: Maybe<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'email'>
+    )> }
+  ) }
+);
+
 export type CreateItemMutationVariables = {
   title: Scalars['String'];
   price: Scalars['Float'];
@@ -106,8 +152,34 @@ export type CreateItemMutation = (
   { __typename?: 'Mutation' }
   & { createItem: (
     { __typename?: 'Item' }
-    & Pick<Item, 'title' | 'image'>
+    & Pick<Item, 'id' | 'title' | 'image'>
   ) }
+);
+
+export type UpdateItemMutationVariables = {
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+};
+
+
+export type UpdateItemMutation = (
+  { __typename?: 'Mutation' }
+  & { updateItem?: Maybe<(
+    { __typename?: 'Item' }
+    & Pick<Item, 'title' | 'description' | 'price'>
+  )> }
+);
+
+export type DeleteItemMutationVariables = {
+  id: Scalars['String'];
+};
+
+
+export type DeleteItemMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteItem'>
 );
 
 export type RegisterUserMutationVariables = {
@@ -229,9 +301,54 @@ export function useItemsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOp
 export type ItemsQueryHookResult = ReturnType<typeof useItemsQuery>;
 export type ItemsLazyQueryHookResult = ReturnType<typeof useItemsLazyQuery>;
 export type ItemsQueryResult = ApolloReactCommon.QueryResult<ItemsQuery, ItemsQueryVariables>;
+export const ItemDocument = gql`
+    query item($id: String!) {
+  item(id: $id) {
+    id
+    title
+    description
+    price
+    createdDate
+    updatedDate
+    image
+    largeImage
+    user {
+      id
+      email
+    }
+  }
+}
+    `;
+
+/**
+ * __useItemQuery__
+ *
+ * To run a query within a React component, call `useItemQuery` and pass it any options that fit your needs.
+ * When your component renders, `useItemQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useItemQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useItemQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<ItemQuery, ItemQueryVariables>) {
+        return ApolloReactHooks.useQuery<ItemQuery, ItemQueryVariables>(ItemDocument, baseOptions);
+      }
+export function useItemLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<ItemQuery, ItemQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<ItemQuery, ItemQueryVariables>(ItemDocument, baseOptions);
+        }
+export type ItemQueryHookResult = ReturnType<typeof useItemQuery>;
+export type ItemLazyQueryHookResult = ReturnType<typeof useItemLazyQuery>;
+export type ItemQueryResult = ApolloReactCommon.QueryResult<ItemQuery, ItemQueryVariables>;
 export const CreateItemDocument = gql`
     mutation createItem($title: String!, $price: Float!, $description: String!, $image: String, $largeImage: String) {
-  createItem(title: $title, price: $price, description: $description, image: $image, largeImage: $largeImage) {
+  createItem(data: {title: $title, price: $price, description: $description, image: $image, largeImage: $largeImage}) {
+    id
     title
     image
   }
@@ -266,6 +383,73 @@ export function useCreateItemMutation(baseOptions?: ApolloReactHooks.MutationHoo
 export type CreateItemMutationHookResult = ReturnType<typeof useCreateItemMutation>;
 export type CreateItemMutationResult = ApolloReactCommon.MutationResult<CreateItemMutation>;
 export type CreateItemMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateItemMutation, CreateItemMutationVariables>;
+export const UpdateItemDocument = gql`
+    mutation updateItem($id: String!, $title: String, $description: String, $price: Float) {
+  updateItem(data: {id: $id, title: $title, description: $description, price: $price}) {
+    title
+    description
+    price
+  }
+}
+    `;
+export type UpdateItemMutationFn = ApolloReactCommon.MutationFunction<UpdateItemMutation, UpdateItemMutationVariables>;
+
+/**
+ * __useUpdateItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateItemMutation, { data, loading, error }] = useUpdateItemMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      description: // value for 'description'
+ *      price: // value for 'price'
+ *   },
+ * });
+ */
+export function useUpdateItemMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateItemMutation, UpdateItemMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateItemMutation, UpdateItemMutationVariables>(UpdateItemDocument, baseOptions);
+      }
+export type UpdateItemMutationHookResult = ReturnType<typeof useUpdateItemMutation>;
+export type UpdateItemMutationResult = ApolloReactCommon.MutationResult<UpdateItemMutation>;
+export type UpdateItemMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateItemMutation, UpdateItemMutationVariables>;
+export const DeleteItemDocument = gql`
+    mutation deleteItem($id: String!) {
+  deleteItem(id: $id)
+}
+    `;
+export type DeleteItemMutationFn = ApolloReactCommon.MutationFunction<DeleteItemMutation, DeleteItemMutationVariables>;
+
+/**
+ * __useDeleteItemMutation__
+ *
+ * To run a mutation, you first call `useDeleteItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteItemMutation, { data, loading, error }] = useDeleteItemMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteItemMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<DeleteItemMutation, DeleteItemMutationVariables>) {
+        return ApolloReactHooks.useMutation<DeleteItemMutation, DeleteItemMutationVariables>(DeleteItemDocument, baseOptions);
+      }
+export type DeleteItemMutationHookResult = ReturnType<typeof useDeleteItemMutation>;
+export type DeleteItemMutationResult = ApolloReactCommon.MutationResult<DeleteItemMutation>;
+export type DeleteItemMutationOptions = ApolloReactCommon.BaseMutationOptions<DeleteItemMutation, DeleteItemMutationVariables>;
 export const RegisterUserDocument = gql`
     mutation registerUser($email: String!, $password: String!) {
   registerUser(email: $email, password: $password)

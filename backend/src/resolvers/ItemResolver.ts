@@ -50,4 +50,15 @@ export class ItemResolver {
     await item.save();
     return item;
   }
+
+  @Mutation(() => Boolean)
+  async deleteItem(@Arg("id") id: string): Promise<Boolean> {
+    const item = await Item.findOne(id);
+    console.log(item);
+    if (!item) {
+      return false;
+    }
+    await item.remove();
+    return true;
+  }
 }

@@ -6,27 +6,34 @@ import {
   useDeleteItemMutation,
 } from "../graphql/generated/graphql";
 
-type DeleteItemProps = { itemId: string };
+type DeleteItemProps = {
+  id: string;
+  title: string;
+};
 
-const DeleteItem: FC<DeleteItemProps> = ({ itemId }) => {
+const DeleteItem: FC<DeleteItemProps> = ({ id, title }) => {
   const [deleteItemMutation] = useDeleteItemMutation();
 
   const deleteItem = useCallback(async () => {
-    await deleteItemMutation({
-      variables: { id: itemId },
-      refetchQueries: [{ query: ItemsDocument }],
-    });
-  }, [itemId]);
+    // TODO: replace it with a proper modal
+    if (window.confirm(`Confirm to delete ${title}`)) {
+      await deleteItemMutation({
+        variables: { id },
+        refetchQueries: [{ query: ItemsDocument }],
+      });
+    }
+  }, [id]);
 
   return (
     <button type="button" onClick={deleteItem}>
-      DeleteItem
+      Delete Item
     </button>
   );
 };
 
 DeleteItem.propTypes = {
-  itemId: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
 };
 
 export default DeleteItem;

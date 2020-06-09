@@ -28,6 +28,10 @@ const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
     font-size: 10px;
+    
+    @media (max-width: 600px) {
+      font-size: 8px;
+    }
   }
 
   *, *:before, *:after {

@@ -6,6 +6,7 @@ module.exports = {
     "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "import/prefer-default-export": "off",
+    "import/no-named-as-default": "off",
     "jsx-a11y/anchor-is-valid": [
       "error",
       {

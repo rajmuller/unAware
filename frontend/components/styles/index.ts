@@ -3,7 +3,7 @@ export { default as CloseButton } from "./CloseButton";
 export { DropDown, DropDownItem, SearchStyles } from "./DropDown";
 export { default as Form } from "./Form";
 export { default as NavStyles } from "./NavStyles";
-export { ItemStyles, ButtonList } from "./ItemStyles";
+export { ItemStyles } from "./ItemStyles";
 export { default as Title } from "./Title";
 export { default as Table } from "./Table";
 export { default as Supreme } from "./Supreme";

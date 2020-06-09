@@ -1,18 +1,17 @@
 import { FC } from "react";
 import PropTypes from "prop-types";
 import Link from "next/link";
-import { Edit } from "react-ikonate";
 
 import formatMoney from "../utils/formatMoney";
-import { Title, ItemStyles, PriceTag, ButtonList } from "./styles";
-import DeleteItem from "./DeleteItem";
+import { Title, ItemStyles, PriceTag } from "./styles";
+import ItemActions from "./ItemActions";
 
 type User = {
   id: string;
   email: string;
 };
 
-type Item = {
+export type Item = {
   id: string;
   title: string;
   description: string;
@@ -28,27 +27,21 @@ type ItemProps = {
   item: Item;
 };
 
-const Item: FC<ItemProps> = ({ item }) => {
+const Item: FC<ItemProps> = ({
+  item: { id, title, description, price, image },
+}) => {
   return (
     <ItemStyles>
-      {item.image && <img alt={item.title} src={item.image} />}
+      {image && <img alt={title} src={image} />}
       <Title>
-        <Link href={{ pathname: "/item", query: { id: item.id } }}>
-          <a>{item.title}</a>
+        <Link href="/item/[itemId]" as={`/item/${id}`}>
+          <a>{title}</a>
         </Link>
       </Title>
-      <PriceTag>{formatMoney(item.price)}</PriceTag>
-      <p>{item.description}</p>
+      <PriceTag>{formatMoney(price)}</PriceTag>
+      <p>{description}</p>
 
-      <ButtonList>
-        <Link href="/update/[itemId]" as={`/update/${item.id}`}>
-          <a>
-            Edit <Edit />
-          </a>
-        </Link>
-        <button type="button">Add To Cart</button>
-        <DeleteItem itemId={item.id} />
-      </ButtonList>
+      <ItemActions id={id} title={title} />
     </ItemStyles>
   );
 };

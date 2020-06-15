@@ -1,12 +1,23 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Int, Mutation, Query, Resolver } from "type-graphql";
 import { Item } from "../entity/Item";
 import { CreateItemInput, UpdateItemInput } from "./types/itemInput";
+import { ItemsArgs } from "./types/itemArgs";
 
 @Resolver()
 export class ItemResolver {
   @Query(() => [Item])
-  async items() {
-    return await Item.find();
+  async items(@Args() { skip, take }: ItemsArgs) {
+    // TODO: order and save items in timestamp not DATE
+    return await Item.find({
+      order: { createdDate: "DESC" },
+      skip,
+      take,
+    });
+  }
+
+  @Query(() => Int)
+  async numberOfItems() {
+    return await Item.count();
   }
 
   @Query(() => Item)

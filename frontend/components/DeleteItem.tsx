@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import {
   ItemsDocument,
+  NumberOfItemsDocument,
   useDeleteItemMutation,
 } from "../graphql/generated/graphql";
 
@@ -19,7 +20,10 @@ const DeleteItem: FC<DeleteItemProps> = ({ id, title }) => {
     if (window.confirm(`Confirm to delete ${title}`)) {
       await deleteItemMutation({
         variables: { id },
-        refetchQueries: [{ query: ItemsDocument }],
+        refetchQueries: [
+          { query: ItemsDocument },
+          { query: NumberOfItemsDocument },
+        ],
       });
     }
   }, [id]);

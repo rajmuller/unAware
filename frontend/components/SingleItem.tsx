@@ -10,7 +10,7 @@ import Head from "next/head";
 
 import { useItemQuery } from "../graphql/generated/graphql";
 import formatMoney from "../utils/formatMoney";
-import { Title, PriceTag } from "./styles";
+import { Title, PriceTag, Img } from "./styles";
 import DeleteItem from "./DeleteItem";
 import ItemActions from "./ItemActions";
 
@@ -18,18 +18,14 @@ const Container = styled.div`
   box-shadow: ${({ theme }) => theme.bs};
   display: grid;
   margin: 2rem auto;
+  min-height: 80rem;
   grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto;
 `;
 
 const Details = styled.div`
   font-size: 2rem;
   margin: 3rem;
-`;
-
-const Img = styled.img`
-  object-fit: contain;
-  width: 100%;
-  height: 100%;
 `;
 
 const Stretch = styled.div`

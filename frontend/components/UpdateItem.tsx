@@ -50,7 +50,7 @@ const UpdateItem: FC<UpdateItemProps> = () => {
       });
       console.log(res);
       if (res) {
-        await router.push(`/item/${itemId}`);
+        await router.push("/item/[itemId]", `/item/${itemId}`);
       }
     },
     [itemId, price, title, description]

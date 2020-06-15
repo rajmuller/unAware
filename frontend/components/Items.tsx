@@ -1,7 +1,11 @@
 import { FC } from "react";
 import styled from "styled-components";
+
+import { useRouter } from "next/router";
 import { useItemsQuery } from "../graphql/generated/graphql";
+import { perPage } from "../config";
 import Item from "./Item";
+import Pagination from "./Pagination";
 
 const CenterContainer = styled.div`
   text-align: center;
@@ -17,19 +21,20 @@ const ItemsList = styled.ul`
 type ItemsProps = {};
 
 const Items: FC<ItemsProps> = () => {
-  const { data, loading } = useItemsQuery();
+  const { query } = useRouter();
+  const currentPage = parseFloat((query.page as string) || "1");
+  const skip = perPage * (currentPage - 1);
+  const { data, loading } = useItemsQuery({
+    variables: { take: perPage, skip },
+  });
 
   if (loading || !data) {
     return <div>loading...</div>;
   }
 
-  data.items.sort(
-    (a, b) =>
-      new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()
-  );
-
   return (
     <CenterContainer>
+      <Pagination />
       <ItemsList>
         {data.items.map((item) => {
           return (
@@ -39,6 +44,7 @@ const Items: FC<ItemsProps> = () => {
           );
         })}
       </ItemsList>
+      <Pagination />
     </CenterContainer>
   );
 };

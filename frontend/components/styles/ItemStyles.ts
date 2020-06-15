@@ -7,11 +7,6 @@ export const ItemStyles = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-  }
   p {
     line-height: 2;
     font-weight: 300;

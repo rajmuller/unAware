@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Link from "next/link";
 
 import formatMoney from "../utils/formatMoney";
-import { Title, ItemStyles, PriceTag } from "./styles";
+import { Title, ItemStyles, PriceTag, Img } from "./styles";
 import ItemActions from "./ItemActions";
 
 type User = {
@@ -32,7 +32,7 @@ const Item: FC<ItemProps> = ({
 }) => {
   return (
     <ItemStyles>
-      {image && <img alt={title} src={image} />}
+      {image && <Img fit="contain" alt={title} src={image} />}
       <Title>
         <Link href="/item/[itemId]" as={`/item/${id}`}>
           <a>{title}</a>
@@ -40,7 +40,6 @@ const Item: FC<ItemProps> = ({
       </Title>
       <PriceTag>{formatMoney(price)}</PriceTag>
       <p>{description}</p>
-
       <ItemActions id={id} title={title} />
     </ItemStyles>
   );

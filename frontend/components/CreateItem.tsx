@@ -1,9 +1,9 @@
 import { FC, SyntheticEvent, useCallback, useState } from "react";
-// import { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
-// import formatMoney from "../utils/formatMoney";
 import {
   ItemsDocument,
+  NumberOfItemsDocument,
   useCreateItemMutation,
 } from "../graphql/generated/graphql";
 import { usePersistentState } from "../hooks";
@@ -12,7 +12,7 @@ import { Form } from "./styles";
 type CreateItemProps = {};
 
 const CreateItem: FC<CreateItemProps> = () => {
-  // const router = useRouter();
+  const router = useRouter();
   const [createItem, { loading }] = useCreateItemMutation();
   const [form, setForm] = usePersistentState("sellForm", {
     title: "",
@@ -68,12 +68,15 @@ const CreateItem: FC<CreateItemProps> = () => {
     const { price, title, description } = form;
     const res = await createItem({
       variables: { price, title, description, image, largeImage },
-      refetchQueries: [{ query: ItemsDocument }],
+      refetchQueries: [
+        { query: ItemsDocument },
+        { query: NumberOfItemsDocument },
+      ],
     });
-    console.log(res);
     if (res) {
+      console.log(res);
       localStorage.removeItem("sellForm");
-      // await router.push(`/item/${title}`);
+      await router.push("/item/[itemId]", `/item/${res.data?.createItem.id}`);
     }
   };
 

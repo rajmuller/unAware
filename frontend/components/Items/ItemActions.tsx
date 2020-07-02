@@ -7,18 +7,24 @@ import { string } from "prop-types";
 import DeleteItem from "./DeleteItem";
 
 export const Container = styled.div`
-  display: grid;
+  display: flex;
   width: 100%;
   border-top: 1px solid ${({ theme }) => theme.lightgrey};
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  grid-gap: 1px;
   background: ${({ theme }) => theme.lightGrey};
   text-align: center;
-  & > * {
+
+  > * {
     background: white;
+    margin-right: 1px;
+    flex: 1;
     border: 0;
     font-size: 1.3rem;
     padding: 1rem;
+    cursor: pointer;
+
+    :last-child {
+      margin-right: 0;
+    }
   }
 `;
 
@@ -28,6 +34,10 @@ type ItemActionsProps = {
 };
 
 const ItemActions: FC<ItemActionsProps> = ({ id, title }) => {
+  if (window.outerWidth < 700) {
+    return null;
+  }
+
   return (
     <Container>
       <Link href="/update/[itemId]" as={`/update/${id}`}>

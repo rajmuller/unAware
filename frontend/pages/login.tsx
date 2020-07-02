@@ -25,11 +25,11 @@ const Login: FC = () => {
             email,
             password,
           },
-          update: (store, { data }) => {
+          update: (cache, { data }) => {
             if (!data) {
               return;
             }
-            store.writeQuery<MeQuery>({
+            cache.writeQuery<MeQuery>({
               query: MeDocument,
               data: {
                 __typename: "Query",

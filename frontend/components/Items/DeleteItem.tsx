@@ -5,7 +5,7 @@ import {
   ItemsDocument,
   NumberOfItemsDocument,
   useDeleteItemMutation,
-} from "../graphql/generated/graphql";
+} from "../../graphql/generated/graphql";
 
 type DeleteItemProps = {
   id: string;

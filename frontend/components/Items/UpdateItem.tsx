@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import {
   useItemQuery,
   useUpdateItemMutation,
-} from "../graphql/generated/graphql";
-import { Form } from "./styles";
+} from "../../graphql/generated/graphql";
+import { Form } from "../styles";
 
 type UpdateItemProps = {};
 

@@ -10,9 +10,9 @@ import Head from "next/head";
 
 import { useItemQuery } from "../graphql/generated/graphql";
 import formatMoney from "../utils/formatMoney";
-import { Title, PriceTag, Img } from "./styles";
-import DeleteItem from "./DeleteItem";
-import ItemActions from "./ItemActions";
+import { Title, PriceTag } from "./styles";
+import DeleteItem from "./Items/DeleteItem";
+import ItemActions from "./Items/ItemActions";
 
 const Container = styled.div`
   box-shadow: ${({ theme }) => theme.bs};
@@ -55,7 +55,6 @@ const SingleItem: FC = () => {
       <Head>
         <title>unAware | {title}</title>
       </Head>
-      {image && <Img alt={title} src={image} />}
       <Details>
         <h2>Viewing {title}</h2>
         <p>{description}</p>

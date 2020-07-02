@@ -11,20 +11,18 @@ Router.events.on("routeChangeError", () => NProgress.done());
 
 const NavBar = styled.div`
   border-bottom: 7px solid ${({ theme }) => theme.black};
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: stretch;
 
   @media (max-width: 1300px) {
-    grid-template-columns: 1fr;
     justify-content: center;
   }
 `;
 
 const SearchBar = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  justify-content: space-between;
   border-bottom: 1px solid ${({ theme }) => theme.lightGrey};
 `;
 
@@ -45,7 +43,6 @@ const Logo = styled.h1`
 
   @media (max-width: 1300px) {
     text-align: center;
-    display: block;
     margin: auto auto 1rem;
 
     a {

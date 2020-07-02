@@ -1,7 +1,6 @@
 import gql from "graphql-tag";
 import * as ApolloReactCommon from "@apollo/react-common";
 import * as ApolloReactHooks from "@apollo/react-hooks";
-
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: any }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -28,7 +27,7 @@ export type Query = {
 
 export type QueryItemsArgs = {
   skip?: Maybe<Scalars["Int"]>;
-  take: Scalars["Int"];
+  take?: Maybe<Scalars["Int"]>;
 };
 
 export type QueryItemArgs = {
@@ -110,7 +109,7 @@ export type UpdateItemInput = {
 
 export type ItemsQueryVariables = Exact<{
   skip?: Maybe<Scalars["Int"]>;
-  take: Scalars["Int"];
+  take?: Maybe<Scalars["Int"]>;
 }>;
 
 export type ItemsQuery = { __typename?: "Query" } & {
@@ -163,7 +162,17 @@ export type CreateItemMutationVariables = Exact<{
 }>;
 
 export type CreateItemMutation = { __typename?: "Mutation" } & {
-  createItem: { __typename?: "Item" } & Pick<Item, "id" | "title" | "image">;
+  createItem: { __typename?: "Item" } & Pick<
+    Item,
+    | "id"
+    | "title"
+    | "description"
+    | "price"
+    | "createdDate"
+    | "updatedDate"
+    | "image"
+    | "largeImage"
+  > & { user?: Maybe<{ __typename?: "User" } & Pick<User, "id" | "email">> };
 };
 
 export type UpdateItemMutationVariables = Exact<{
@@ -241,7 +250,7 @@ export type HelloQueryVariables = Exact<{ [key: string]: never }>;
 export type HelloQuery = { __typename?: "Query" } & Pick<Query, "hello">;
 
 export const ItemsDocument = gql`
-  query items($skip: Int, $take: Int!) {
+  query items($skip: Int, $take: Int) {
     items(skip: $skip, take: $take) {
       id
       title
@@ -436,7 +445,16 @@ export const CreateItemDocument = gql`
     ) {
       id
       title
+      description
+      price
+      createdDate
+      updatedDate
       image
+      largeImage
+      user {
+        id
+        email
+      }
     }
   }
 `;

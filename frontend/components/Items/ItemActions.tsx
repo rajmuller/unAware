@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Edit } from "react-ikonate";
 import styled from "styled-components";
 import { string } from "prop-types";
+
 import DeleteItem from "./DeleteItem";
 
 export const Container = styled.div`

@@ -1,4 +1,4 @@
-import UpdateItem from "../../components/UpdateItem";
+import UpdateItem from "../../components/Items/UpdateItem";
 import { withApollo } from "../../lib/withApollo";
 
 const UpdateItemPage = () => {

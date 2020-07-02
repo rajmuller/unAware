@@ -7,6 +7,7 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "import/prefer-default-export": "off",
     "import/no-named-as-default": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
     "jsx-a11y/anchor-is-valid": [
       "error",
       {

@@ -9,7 +9,8 @@ const theme = {
   red: "#FF0000",
   black: "#393939",
   grey: "#3A3A3A",
-  lightGrey: "#a0a0a0",
+  mediumGrey: "#717171",
+  lightGrey: "#c9c9c9",
   offWhite: "#EDEDED",
   maxWidth: "1200px",
   bs: "0 12px 24px 0 rgba(0, 0, 0, 0.4)",
@@ -28,10 +29,7 @@ const GlobalStyle = createGlobalStyle`
   html {
     box-sizing: border-box;
     font-size: 10px;
-    
-    @media (max-width: 600px) {
-      font-size: 8px;
-    }
+    -webkit-text-size-adjust: none;
   }
 
   *, *:before, *:after {
@@ -42,14 +40,27 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     margin: 0;
     font-size: 1.5rem;
-    line-height: 2;
     font-weight: 500;
     font-family: "radnika", "Mitr", sans-serif;
   }
-
+  
+  h1,h2,h3,h4,h5,h6 {
+    margin-top: 0;
+    margin-bottom: .5rem
+  }
+  
+  p {
+    margin-top: 0;
+    margin-bottom: 1rem
+}
+  
   a {
     text-decoration: none;
     color: ${theme.black};
+  }
+  
+  ul, ol {
+    padding: 0;
   }
   
   li {
@@ -59,13 +70,17 @@ const GlobalStyle = createGlobalStyle`
 
 const Container = styled.div`
   background: white;
+  overflow: hidden;
   color: ${({ theme }) => theme.black};
 `;
 
 const InnerContainer = styled.div`
   max-width: ${({ theme }) => theme.maxWidth};
   margin: 0 auto;
-  padding: 2rem;
+
+  @media (min-width: 700px) {
+    padding: 2rem;
+  }
 `;
 
 const Layout: FC = ({ children }) => {

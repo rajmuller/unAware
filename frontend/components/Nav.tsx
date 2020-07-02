@@ -8,9 +8,9 @@ const Nav = () => (
     <NavLink href="/signup">signup</NavLink>
     <NavLink href="/login">login</NavLink>
     <NavLink href="/logout">logout</NavLink>
-    <NavLink href="/authorization">authorization</NavLink>
+    {/* <NavLink href="/authorization">authorization</NavLink> */}
     <NavLink href="/orders">orders</NavLink>
-    <NavLink href="/me">account</NavLink>
+    {/* <NavLink href="/me">account</NavLink> */}
   </NavStyles>
 );
 

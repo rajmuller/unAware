@@ -11,7 +11,7 @@ export class ItemResolver {
     return await Item.find({
       order: { createdDate: "DESC" },
       skip,
-      take,
+      take: take || 0,
     });
   }
 

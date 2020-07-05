@@ -16,7 +16,7 @@ import { sendRefreshToken } from "./authentication/sendRefreshToken";
 
 (async () => {
   const app = express();
-  app.use("/refresh_token", cookieParser());
+  app.use(cookieParser());
   app.use(
     cors({
       origin: process.env.FRONTEND_URL,

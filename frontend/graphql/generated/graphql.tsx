@@ -28,7 +28,7 @@ export type Query = {
 
 export type QueryItemsArgs = {
   skip?: Maybe<Scalars["Int"]>;
-  take: Scalars["Int"];
+  take?: Maybe<Scalars["Int"]>;
 };
 
 export type QueryItemArgs = {
@@ -110,7 +110,7 @@ export type UpdateItemInput = {
 
 export type ItemsQueryVariables = Exact<{
   skip?: Maybe<Scalars["Int"]>;
-  take: Scalars["Int"];
+  take?: Maybe<Scalars["Int"]>;
 }>;
 
 export type ItemsQuery = { __typename?: "Query" } & {
@@ -241,7 +241,7 @@ export type HelloQueryVariables = Exact<{ [key: string]: never }>;
 export type HelloQuery = { __typename?: "Query" } & Pick<Query, "hello">;
 
 export const ItemsDocument = gql`
-  query items($skip: Int, $take: Int!) {
+  query items($skip: Int, $take: Int) {
     items(skip: $skip, take: $take) {
       id
       title

@@ -21,7 +21,7 @@ const DeleteItem: FC<DeleteItemProps> = ({ id, title }) => {
       await deleteItemMutation({
         variables: { id },
         refetchQueries: [
-          { query: ItemsDocument },
+          { query: ItemsDocument, variables: { skip: 0, take: 4 } },
           { query: NumberOfItemsDocument },
         ],
       });

@@ -5,18 +5,10 @@ import { ArgsType, Field, Int } from "type-graphql";
 export class ItemsArgs {
   @Field(() => Int, { defaultValue: 0 })
   @Min(0)
-  skip: number;
+  skip?: number;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @Min(1)
   @Max(200)
-  take: number;
-
-  // helpers - index calculations
-  get startIndex(): number {
-    return this.skip;
-  }
-  get endIndex(): number {
-    return this.skip + this.take;
-  }
+  take?: number;
 }

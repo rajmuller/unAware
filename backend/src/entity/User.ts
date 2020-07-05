@@ -5,9 +5,21 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, registerEnumType } from "type-graphql";
 
 import { Item } from "./Item";
+
+export enum Permission {
+  ADMIN = "admin",
+  USER = "user",
+  ITEMCREATE = "itemcreate",
+  ITEMDELETE = "itemdelete",
+  PERMISSIONUPDATE = "permissionupdate",
+}
+
+registerEnumType(Permission, {
+  name: "Permission",
+});
 
 @ObjectType()
 @Entity("user")
@@ -17,8 +29,12 @@ export class User extends BaseEntity {
   id: string;
 
   @Field()
-  @Column("text")
+  @Column("text", { unique: true })
   email: string;
+
+  @Field(() => [Permission], { defaultValue: Permission.USER })
+  @Column("text")
+  permission: Permission[];
 
   @Column("text")
   password: string;

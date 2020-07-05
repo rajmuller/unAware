@@ -26,6 +26,7 @@ const Items: FC<ItemsProps> = () => {
   const skip = perPage * (currentPage - 1);
   const { data, loading } = useItemsQuery({
     variables: { take: perPage, skip },
+    fetchPolicy: "cache-and-network",
   });
 
   if (loading || !data) {

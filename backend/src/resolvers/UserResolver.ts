@@ -1,21 +1,21 @@
 import {
-  Resolver,
-  Query,
-  Mutation,
   Arg,
-  ObjectType,
-  Field,
   Ctx,
+  Field,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { hash, compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import { verify } from "jsonwebtoken";
 
-import { User } from "../entity/User";
+import { Permission, User } from "../entity/User";
 import { MyContext } from "../MyContext";
 import {
-  createRefreshToken,
   createAccessToken,
+  createRefreshToken,
 } from "../authentication/tokens";
 import { isAuth } from "../authentication/isAuthMiddleware";
 import { sendRefreshToken } from "../authentication/sendRefreshToken";
@@ -65,22 +65,24 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => User)
   async registerUser(
     @Arg("email") email: string,
-    @Arg("password") password: string
-  ) {
+    @Arg("password") password: string,
+    @Arg("permission", () => [Permission], { defaultValue: [Permission.USER] })
+    permission: Permission[]
+  ): Promise<User> {
     const hashedPassword = await hash(password, 12);
 
     try {
-      await User.insert({
-        email,
+      return await User.create({
+        email: email.toLowerCase(),
         password: hashedPassword,
-      });
-      return true;
+        permission: permission,
+      }).save();
     } catch (error) {
       console.error(error);
-      return false;
+      throw new Error(error);
     }
   }
 

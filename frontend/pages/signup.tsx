@@ -1,49 +1,26 @@
-import { FC, useState } from "react";
+import { FC } from "react";
+import styled from "styled-components";
 
-import { useRouter } from "next/router";
-import { useRegisterUserMutation } from "../graphql/generated/graphql";
 import { withApollo } from "../lib/withApollo";
+import Signup from "../components/Signup";
 
-const Signup: FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [registerUser] = useRegisterUserMutation();
-  const router = useRouter();
+const Columns = styled.div`
+  display: flex;
+  margin: -12px 0 0 -12px;
 
+  & > * {
+    margin: 12px 0 0 12px;
+  }
+`;
+
+const SignupPage: FC = () => {
   return (
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        console.log("form submitted");
-        const res = await registerUser({
-          variables: {
-            email,
-            password,
-          },
-        });
-        console.log(res);
-        await router.push("/");
-      }}
-    >
-      <input
-        value={email}
-        placeholder="email"
-        type="email"
-        onChange={(e) => {
-          setEmail(e.target.value);
-        }}
-      />
-      <input
-        value={password}
-        placeholder="password"
-        type="password"
-        onChange={(e) => {
-          setPassword(e.target.value);
-        }}
-      />
-      <button type="submit">Sign Up</button>
-    </form>
+    <Columns>
+      <Signup />
+      <Signup />
+      <Signup />
+    </Columns>
   );
 };
 
-export default withApollo()(Signup);
+export default withApollo()(SignupPage);

@@ -5,7 +5,7 @@ import { ArgsType, Field, Int } from "type-graphql";
 export class ItemsArgs {
   @Field(() => Int, { defaultValue: 0 })
   @Min(0)
-  skip?: number;
+  skip: number;
 
   @Field(() => Int, { nullable: true })
   @Min(1)

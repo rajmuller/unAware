@@ -8,6 +8,8 @@ import { ApolloLink } from "apollo-link";
 import jwtDecode from "jwt-decode";
 
 import { getAccessToken, setAccessToken } from "../utils/accessToken";
+// import allModalResolvers from "../cache/resolvers";
+import { mutations } from "../cache/resolvers/modalResolver";
 
 export default function createApolloClient(
   initialState: NormalizedCacheObject,
@@ -72,5 +74,9 @@ export default function createApolloClient(
     ssrMode: Boolean(ctx),
     link: ApolloLink.from([tokenRefreshMiddleware, authMiddleware, httpLink]),
     cache: new InMemoryCache().restore(initialState),
+    resolvers: {
+      Mutation: mutations,
+    },
+    connectToDevTools: true,
   });
 }

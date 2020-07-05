@@ -7,7 +7,6 @@ import { ItemsArgs } from "./types/itemArgs";
 export class ItemResolver {
   @Query(() => [Item])
   async items(@Args() { skip, take }: ItemsArgs) {
-    // TODO: order and save items in timestamp not DATE
     return await Item.find({
       order: { createdDate: "DESC" },
       skip,

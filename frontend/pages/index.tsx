@@ -6,7 +6,7 @@ const Index: FC = () => {
   const { data, loading } = useUsersQuery({ fetchPolicy: "cache-and-network" });
   const { data: meData } = useMeQuery();
 
-  if (loading || !data) {
+  if (loading) {
     return <div>loading...</div>;
   }
 
@@ -14,7 +14,7 @@ const Index: FC = () => {
     <>
       <div>index vagyok</div>
       <ul>
-        {data.users.map((user) => {
+        {data?.users.map((user) => {
           return (
             <li key={user.id}>
               userId: {user.id} | email: {user.email}

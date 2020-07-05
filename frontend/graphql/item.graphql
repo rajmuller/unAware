@@ -54,7 +54,16 @@ mutation createItem(
   ) {
     id
     title
+    description
+    price
+    createdDate
+    updatedDate
     image
+    largeImage
+    user {
+      id
+      email
+    }
   }
 }
 

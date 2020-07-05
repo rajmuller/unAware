@@ -2,11 +2,14 @@ import { FC, SyntheticEvent, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 import {
-  ItemsDocument,
-  NumberOfItemsDocument,
+  // ItemsDocument,
+  // ItemsQuery,
+  // NumberOfItemsDocument,
+  // NumberOfItemsQuery,
   useCreateItemMutation,
 } from "../graphql/generated/graphql";
 import { usePersistentState } from "../hooks";
+// import { perPage } from "../config";
 import { Form } from "./styles";
 
 type CreateItemProps = {};
@@ -68,13 +71,32 @@ const CreateItem: FC<CreateItemProps> = () => {
     const { price, title, description } = form;
     const res = await createItem({
       variables: { price, title, description, image, largeImage },
-      refetchQueries: [
-        { query: ItemsDocument },
-        { query: NumberOfItemsDocument },
-      ],
+      // TODO: implement cache update
+      // update: (cache, { data }) => {
+      //   if (!data) {
+      //     return;
+      //   }
+      //
+      //   const numberOfItemsQuery = cache.readQuery<NumberOfItemsQuery>({
+      //     query: NumberOfItemsDocument,
+      //   });
+      //   cache.writeQuery<NumberOfItemsQuery>({
+      //     query: NumberOfItemsDocument,
+      //     data: {
+      //       numberOfItems: numberOfItemsQuery!.numberOfItems + 1,
+      //     },
+      //   });
+      //   const numberOfPages = Math.ceil(
+      //     numberOfItemsQuery!.numberOfItems / perPage
+      //   );
+      // },
+      // refetchQueries: [
+      //   () => {
+      //     return { query: ItemsDocument, variables: { take: 4, skip: 4 } };
+      //   },
+      // ],
     });
     if (res) {
-      console.log(res);
       localStorage.removeItem("sellForm");
       await router.push("/item/[itemId]", `/item/${res.data?.createItem.id}`);
     }

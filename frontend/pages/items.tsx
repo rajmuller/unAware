@@ -1,12 +1,12 @@
 import { FC } from "react";
 
-import Items from "../components/Items";
+import Items from "../components/Items/Items";
 import { withApollo } from "../lib/withApollo";
 
-type itemsProps = {};
+type ItemsPageProps = {};
 
-const items: FC<itemsProps> = () => {
+const ItemsPage: FC<ItemsPageProps> = () => {
   return <Items />;
 };
 
-export default withApollo()(items);
+export default withApollo()(ItemsPage);

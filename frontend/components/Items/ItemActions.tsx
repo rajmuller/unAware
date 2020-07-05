@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Edit } from "react-ikonate";
 import styled from "styled-components";
 import { string } from "prop-types";
-import { useMutation, useQuery } from "@apollo/react-hooks";
 
 import DeleteItem from "./DeleteItem";
 
@@ -35,15 +34,9 @@ type ItemActionsProps = {
 };
 
 const ItemActions: FC<ItemActionsProps> = ({ id, title }) => {
-  const { data } = useQuery(GET_ACTIVE_MODAL);
-  const [changeActiveModal] = useMutation(CHANGE_ACTIVE_MODAL, {
-    variables: { activeModal: "lfoasz" },
-  });
-
   if (window.outerWidth < 700) {
     return null;
   }
-  console.log("GET_ACTIVE_MODAL: ", data);
 
   return (
     <Container>
@@ -53,9 +46,6 @@ const ItemActions: FC<ItemActionsProps> = ({ id, title }) => {
         </a>
       </Link>
       <button type="button">Add To Cart</button>
-      <button type="button" onClick={() => changeActiveModal()}>
-        client cache test
-      </button>
       <DeleteItem id={id} title={title} />
     </Container>
   );

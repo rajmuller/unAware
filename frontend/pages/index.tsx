@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { useMeQuery, useUsersQuery } from "../graphql/generated/graphql";
-import { withApollo } from "../lib/withApollo";
 
 const Index: FC = () => {
   const { data, loading } = useUsersQuery({ fetchPolicy: "cache-and-network" });
@@ -31,4 +30,4 @@ const Index: FC = () => {
   );
 };
 
-export default withApollo()(Index);
+export default Index;

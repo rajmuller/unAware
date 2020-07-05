@@ -1,10 +1,16 @@
 import { FC } from "react";
 import styled from "styled-components";
-import { useRouter } from "next/router";
+import { NetworkStatus } from "@apollo/client";
 
-import { useItemsQuery } from "../../graphql/generated/graphql";
+import { useQuery } from "@apollo/react-hooks";
+import {
+  ItemsDocument,
+  NumberOfItemsDocument,
+  // useItemsQuery,
+  // useNumberOfItemsQuery,
+} from "../../graphql/generated/graphql";
 import { perPage } from "../../config";
-import Item from "../Item";
+// import Item from "../Item";
 import Pagination from "./Pagination";
 
 const CenterContainer = styled.div`
@@ -39,29 +45,80 @@ const ItemsList = styled.ul`
   }
 `;
 
+const Rec = styled.div`
+  height: 500px;
+  width: 500px;
+  background: red;
+`;
+
+export const itemsQueryVariables = {
+  skip: 0,
+  take: perPage,
+};
+
 type ItemsProps = {};
 
 const Items: FC<ItemsProps> = () => {
-  const { query } = useRouter();
-  const currentPage = parseFloat((query.page as string) || "1");
-  const skip = perPage * (currentPage - 1);
-  const { data, loading } = useItemsQuery({
-    variables: { take: perPage, skip },
-    fetchPolicy: "network-only",
+  const {
+    data,
+    loading: loadingItems,
+    networkStatus,
+    fetchMore,
+    error,
+  } = useQuery(ItemsDocument, {
+    variables: itemsQueryVariables,
+    notifyOnNetworkStatusChange: true,
   });
+  const { data: numOfItemsData, loading: loadingNumOfItems } = useQuery(
+    NumberOfItemsDocument
+  );
 
-  if (loading || !data) {
+  const loading = loadingItems || loadingNumOfItems;
+  const loadingMoreItems = networkStatus === NetworkStatus.fetchMore;
+
+  const loadMoreItems = () => {
+    fetchMore({
+      variables: {
+        skip: data?.items.length,
+      },
+      updateQuery: (previousResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return previousResult;
+        }
+        return {
+          ...previousResult, // Append the new posts results to the old one
+          items: [...previousResult.items, ...fetchMoreResult.items],
+        };
+      },
+    });
+  };
+
+  if (loading || loadingMoreItems) {
     return <div>loading...</div>;
   }
+  if (error) {
+    return <div>ERROR... {error}</div>;
+  }
+
+  const areMoreItems = data!.items.length < numOfItemsData!.numberOfItems;
 
   return (
     <CenterContainer>
       <Pagination />
       <ItemsList>
-        {data.items.map((item) => {
-          return <Item key={item.id} item={item} />;
+        {data!.items.map((item) => {
+          return <Rec>{item.title}</Rec>;
         })}
       </ItemsList>
+      {areMoreItems && (
+        <button
+          type="button"
+          onClick={loadMoreItems}
+          disabled={loadingMoreItems}
+        >
+          {loadingMoreItems ? "Loading..." : "Show More"}
+        </button>
+      )}
       <Pagination />
     </CenterContainer>
   );

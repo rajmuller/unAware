@@ -1,10 +1,17 @@
 import { AppProps } from "next/app";
 import { useEffect, useState } from "react";
-import Layout from "../components/Layout";
+import { ApolloProvider } from "@apollo/react-hooks";
+import { Provider } from "react-redux";
+
 import { setAccessToken } from "../utils/accessToken";
+import Layout from "../components/Layout";
+import { useApollo } from "../lib/apollo";
+import { useStore } from "../lib/redux";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [loading, setLoading] = useState(true);
+  const store = useStore(pageProps.initialReduxState);
+  const apolloClient = useApollo(pageProps.initialApolloState);
 
   useEffect(() => {
     fetch("http://localhost:4000/refresh_token", {
@@ -22,9 +29,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   }
 
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <Provider store={store}>
+      <ApolloProvider client={apolloClient}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ApolloProvider>
+    </Provider>
   );
 };
 

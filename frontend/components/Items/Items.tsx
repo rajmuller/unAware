@@ -2,15 +2,11 @@ import { FC } from "react";
 import styled from "styled-components";
 import { NetworkStatus } from "@apollo/client";
 
-import { useQuery } from "@apollo/react-hooks";
 import {
-  ItemsDocument,
-  NumberOfItemsDocument,
-  // useItemsQuery,
-  // useNumberOfItemsQuery,
+  useItemsQuery,
+  useNumberOfItemsQuery,
 } from "../../graphql/generated/graphql";
 import { perPage } from "../../config";
-// import Item from "../Item";
 import Pagination from "./Pagination";
 
 const CenterContainer = styled.div`
@@ -65,13 +61,14 @@ const Items: FC<ItemsProps> = () => {
     networkStatus,
     fetchMore,
     error,
-  } = useQuery(ItemsDocument, {
+  } = useItemsQuery({
     variables: itemsQueryVariables,
     notifyOnNetworkStatusChange: true,
   });
-  const { data: numOfItemsData, loading: loadingNumOfItems } = useQuery(
-    NumberOfItemsDocument
-  );
+  const {
+    data: numOfItemsData,
+    loading: loadingNumOfItems,
+  } = useNumberOfItemsQuery();
 
   const loading = loadingItems || loadingNumOfItems;
   const loadingMoreItems = networkStatus === NetworkStatus.fetchMore;

@@ -1,5 +1,8 @@
 mutation registerUser($email: String!, $password: String!){
-  registerUser(email: $email, password: $password)
+  registerUser(email: $email, password: $password) {
+    id
+    email
+  }
 }
 
 mutation loginUser($email: String!, $password: String!){

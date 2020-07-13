@@ -4,7 +4,6 @@ import {
   useMeQuery,
 } from "../graphql/generated/graphql";
 import { setAccessToken } from "../utils/accessToken";
-import { withApollo } from "../lib/withApollo";
 
 const Logout: FC = () => {
   const [logout, { client }] = useLogoutUserMutation();
@@ -27,4 +26,4 @@ const Logout: FC = () => {
   );
 };
 
-export default withApollo()(Logout);
+export default Logout;

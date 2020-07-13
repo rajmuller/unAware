@@ -7,7 +7,7 @@ import {
   useNumberOfItemsQuery,
 } from "../../graphql/generated/graphql";
 import { perPage } from "../../config";
-import Pagination from "./Pagination";
+import Item from "../Item";
 
 const CenterContainer = styled.div`
   text-align: center;
@@ -39,12 +39,6 @@ const ItemsList = styled.ul`
       width: calc(50% - var(--gap));
     }
   }
-`;
-
-const Rec = styled.div`
-  height: 500px;
-  width: 500px;
-  background: red;
 `;
 
 export const itemsQueryVariables = {
@@ -90,7 +84,7 @@ const Items: FC<ItemsProps> = () => {
     });
   };
 
-  if (loading || loadingMoreItems) {
+  if (loading && !loadingMoreItems) {
     return <div>loading...</div>;
   }
   if (error) {
@@ -101,10 +95,13 @@ const Items: FC<ItemsProps> = () => {
 
   return (
     <CenterContainer>
-      <Pagination />
       <ItemsList>
         {data!.items.map((item) => {
-          return <Rec>{item.title}</Rec>;
+          return (
+            <Item key={item.id} item={item}>
+              {item.title}
+            </Item>
+          );
         })}
       </ItemsList>
       {areMoreItems && (
@@ -116,7 +113,6 @@ const Items: FC<ItemsProps> = () => {
           {loadingMoreItems ? "Loading..." : "Show More"}
         </button>
       )}
-      <Pagination />
     </CenterContainer>
   );
 };

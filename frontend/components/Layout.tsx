@@ -39,7 +39,6 @@ const GlobalStyle = createGlobalStyle`
   body {
     padding: 0;
     margin: 0;
-    font-size: 1.5rem;
     font-weight: 500;
     font-family: "radnika", "Mitr", sans-serif;
   }

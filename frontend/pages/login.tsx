@@ -7,7 +7,6 @@ import {
   useLoginUserMutation,
 } from "../graphql/generated/graphql";
 import { setAccessToken } from "../utils/accessToken";
-import { withApollo } from "../lib/withApollo";
 
 const Login: FC = () => {
   const [email, setEmail] = useState("");
@@ -69,4 +68,4 @@ const Login: FC = () => {
   );
 };
 
-export default withApollo()(Login);
+export default Login;

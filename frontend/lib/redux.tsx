@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Store } from "redux";
 import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "../store/reducers";
+import rootReducer from "../store/slices";
 
 let store: Store | undefined;
 

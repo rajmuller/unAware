@@ -1,7 +1,6 @@
 import { FC } from "react";
 import styled from "styled-components";
 
-import { withApollo } from "../lib/withApollo";
 import Signup from "../components/Signup";
 
 const Columns = styled.div`
@@ -23,4 +22,4 @@ const SignupPage: FC = () => {
   );
 };
 
-export default withApollo()(SignupPage);
+export default SignupPage;

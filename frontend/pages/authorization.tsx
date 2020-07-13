@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { useIsLoggedInQuery } from "../graphql/generated/graphql";
-import { withApollo } from "../lib/withApollo";
 
 const Authorization: FC = () => {
   const { data, loading, error } = useIsLoggedInQuery({
@@ -24,4 +23,4 @@ const Authorization: FC = () => {
   );
 };
 
-export default withApollo()(Authorization);
+export default Authorization;

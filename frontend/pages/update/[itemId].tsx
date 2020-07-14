@@ -1,4 +1,4 @@
-import UpdateItem from "../../components/Items/UpdateItem";
+import UpdateItem from "../../components/items/UpdateItem";
 
 const UpdateItemPage = () => {
   return <UpdateItem />;

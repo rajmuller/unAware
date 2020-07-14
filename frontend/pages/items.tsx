@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { GetStaticProps } from "next";
 
-import Items, { itemsQueryVariables } from "../components/Items/Items";
+import Items, { itemsQueryVariables } from "../components/items/Items";
 import { initializeApollo } from "../lib/apollo";
 import {
   ItemsDocument,

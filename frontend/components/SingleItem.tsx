@@ -11,8 +11,8 @@ import Head from "next/head";
 import { useItemQuery } from "../graphql/generated/graphql";
 import formatMoney from "../utils/formatMoney";
 import { Title, PriceTag } from "./styles";
-import DeleteItem from "./Items/DeleteItem";
-import ItemActions from "./Items/ItemActions";
+import DeleteItem from "./items/DeleteItem";
+import ItemActions from "./items/ItemActions";
 
 const Container = styled.div`
   box-shadow: ${({ theme }) => theme.bs};

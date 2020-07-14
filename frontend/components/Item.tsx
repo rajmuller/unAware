@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import formatMoney from "../utils/formatMoney";
 import { PriceTag } from "./styles";
-import ItemActions from "./Items/ItemActions";
+import ItemActions from "./items/ItemActions";
 
 const Container = styled.li`
   background: #fff;

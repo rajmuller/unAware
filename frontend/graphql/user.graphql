@@ -1,8 +1,8 @@
-mutation registerUser($email: String!, $password: String!){
+mutation registerUser($email: String!, $password: String!) {
   registerUser(email: $email, password: $password)
 }
 
-mutation loginUser($email: String!, $password: String!){
+mutation loginUser($email: String!, $password: String!) {
   loginUser(email: $email, password: $password) {
     accessToken
     user {
@@ -30,7 +30,7 @@ query me {
   }
 }
 
-query isLoggedIn{
+query isLoggedIn {
   isLoggedIn
 }
 

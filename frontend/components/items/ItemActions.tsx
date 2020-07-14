@@ -1,10 +1,12 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import Link from "next/link";
 import { Edit } from "react-ikonate";
 import styled from "styled-components";
 import { string } from "prop-types";
+import { useDispatch } from "react-redux";
 
 import DeleteItem from "./DeleteItem";
+import modal from "../../store/slices/modal";
 
 export const Container = styled.div`
   display: flex;
@@ -34,6 +36,14 @@ type ItemActionsProps = {
 };
 
 const ItemActions: FC<ItemActionsProps> = ({ id, title }) => {
+  const dispatch = useDispatch();
+  const testmodal = useCallback(() => {
+    dispatch(modal.actions.changeActive("TestModal"));
+  }, [dispatch]);
+  const dismiss = useCallback(() => {
+    dispatch(modal.actions.dismiss());
+  }, [dispatch]);
+
   if (window.outerWidth < 700) {
     return null;
   }
@@ -46,6 +56,12 @@ const ItemActions: FC<ItemActionsProps> = ({ id, title }) => {
         </a>
       </Link>
       <button type="button">Add To Cart</button>
+      <button type="button" onClick={testmodal}>
+        testmodal
+      </button>
+      <button type="button" onClick={dismiss}>
+        dismiss
+      </button>
       <DeleteItem id={id} title={title} />
     </Container>
   );

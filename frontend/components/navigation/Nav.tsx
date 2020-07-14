@@ -1,4 +1,4 @@
-import NavStyles from "./styles/NavStyles";
+import NavStyles from "../styles/NavStyles";
 import NavLink from "./NavLink";
 // TODO: clean this
 const Nav = () => (

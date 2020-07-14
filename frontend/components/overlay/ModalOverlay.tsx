@@ -1,80 +1,92 @@
-// /* eslint-disable react/jsx-props-no-spreading */
-// import * as React from "react";
-// import { FC, ReactNode, Children } from "react";
-// import { useTransition, animated } from "react-spring";
-//
-// import { useCapture } from "../../hooks";
-// import Overlay from "./Overlay";
-//
-//
-// import { useDismiss } from "../Dismissable";
-// import { ModalFC } from "../modal/types";
-// import PullToDismiss, { springConfig } from "../PullToDismiss";
-//
-// type ModalOverlayProps = {
-//   activeName?: string;
-//   transitions?: ReturnType<typeof useTransition>;
-// };
-//
-// export const useModalOverlay = (): ModalOverlayProps => {
-//   const dismiss = useDismiss();
-//   const onClick = useCapture(dismiss, { targetCheck: true });
-//   const activeName = useSelector(activeModalSelector);
-//   const transitions = useTransition(activeName, (name) => name || "none", {
-//     from: { transform: "translate3d(0, 100%, 0)" },
-//     enter: { transform: "translate3d(0, 0%, 0)" },
-//     leave: { transform: "translate3d(0, 100%, 0)" },
-//     config: springConfig,
-//   });
-//
-//   return { onClick, activeName, transitions };
-// };
-//
-// const findActiveModal = (
-//   children: ReturnType<ModalFC<unknown>>[],
-//   activeName: ModalName
-// ): ReactNode => {
-//   return children.find(({ type }) => type.modalName === activeName);
-// };
-//
-// const ModalOverlay: FC<ModalOverlayProps> = ({
-//   children,
-//   activeName,
-//   transitions,
-//   ...overlayProps
-// }) => {
-//   const visible = !!activeName;
-//
-//   return (
-//     <Overlay
-//       {...(overlayProps as ExtractComponentProps<typeof Overlay>)}
-//       variant="bottomLeft"
-//       backgroundColor={Color.curtain0}
-//       css={{
-//         pointerEvents: visible ? "initial" : "none",
-//         maxHeight: "100%",
-//         overflow: "hidden",
-//         opacity: Number(visible),
-//         transition: "opacity .2s ease-in-out",
-//         "> *": {
-//           position: "absolute",
-//           width: "100%",
-//         },
-//       }}
-//     >
-//       {transitions.map(({ props, key, item }) => {
-//         const activeModal = findActiveModal(
-//           Children.toArray(children) as ReturnType<ModalFC<unknown>>[],
-//           item as ModalName
-//         );
-//         return (
-//           <animated.div key={key} style={props}>
-//             <PullToDismiss>{activeModal}</PullToDismiss>
-//           </animated.div>
-//         );
-//       })}
-//     </Overlay>
-//   );
-// };
-//
-// export default ModalOverlay;
+import { FC, useCallback, SyntheticEvent, useEffect, useRef } from "react";
+import { useTransition, animated } from "react-spring";
+import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { clearAllBodyScrollLocks, disableBodyScroll } from "body-scroll-lock";
+
+import { useCapture } from "../../hooks";
+import Overlay from "./Overlay";
+
+import PullToDismiss, { springConfig } from "./PullToDismiss";
+import modal from "../../store/slices/modal";
+import { activeModalSelector } from "../../store/selectors";
+
+const DynamicOverlay = styled(Overlay)<{ show: boolean }>`
+  pointer-events: ${({ show }) => (show ? "initial" : "none")};
+  max-height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  opacity: ${({ show }) => Number(show)};
+  transition: opacity 0.2s ease-in-out;
+
+  > * {
+    position: absolute;
+    width: 100%;
+  }
+`;
+
+type ModalOverlayProps = {
+  show: boolean;
+  transitions?: ReturnType<typeof useTransition>;
+  onClick: (event: SyntheticEvent<Element, Event>) => void;
+};
+
+export const useModalOverlay = (): ModalOverlayProps => {
+  const activeName = useSelector(activeModalSelector);
+  const show = !!activeName;
+
+  const dispatch = useDispatch();
+  const dismiss = useCallback(() => {
+    dispatch(modal.actions.dismiss());
+  }, [dispatch]);
+  const onClick = useCapture(dismiss, { targetCheck: true });
+  const transitions = useTransition(activeName, (name) => name || "none", {
+    from: { transform: "translate3d(0, 100%, 0)" },
+    enter: { transform: "translate3d(0, 0%, 0)" },
+    leave: { transform: "translate3d(0, 100%, 0)" },
+    config: springConfig,
+  });
+
+  return { onClick, transitions, show };
+};
+
+const ModalOverlay: FC<ModalOverlayProps> = ({
+  children,
+  show,
+  transitions,
+  ...overlayProps
+}) => {
+  const animationRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    disableBodyScroll(animationRef.current!);
+
+    return () => {
+      clearAllBodyScrollLocks();
+    };
+  }, []);
+
+  if (!show) {
+    return null;
+  }
+
+  return (
+    <DynamicOverlay {...overlayProps} show={show} variant="bottomCenter">
+      {transitions!.map(({ props, key }) => {
+        return (
+          <animated.div key={key} style={props} ref={animationRef}>
+            <PullToDismiss>{children}</PullToDismiss>
+          </animated.div>
+        );
+      })}
+    </DynamicOverlay>
+  );
+};
+
+ModalOverlay.propTypes = {
+  show: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+export default ModalOverlay;

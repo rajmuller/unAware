@@ -1,6 +1,10 @@
 import styled, { css } from "styled-components";
 
-const Overlay = styled.div<{ backdrop: boolean }>`
+const Overlay = styled.div<{
+  backdrop?: boolean;
+  background?: string;
+  variant: string;
+}>`
   position: absolute;
   top: 0;
   left: 0;
@@ -15,8 +19,30 @@ const Overlay = styled.div<{ backdrop: boolean }>`
   > * {
     pointer-events: initial;
   }
+  
+  ${({ variant }) =>
+    // eslint-disable-next-line no-nested-ternary
+    variant === "bottomCenter"
+      ? css`
+          justify-content: flex-end;
+          align-items: center;
+        `
+      : variant === "center"
+      ? css`
+          justify-content: center;
+          align-items: center;
+        `
+      : css`
+          align-items: center;
+        `}
 
-  ${({ backdrop }: { backdrop: boolean }) =>
+  ${({ background }) =>
+    background &&
+    css`
+      background-color: ${background};
+    `}
+
+  ${({ backdrop }) =>
     backdrop &&
     css`
       background-color: transparent;

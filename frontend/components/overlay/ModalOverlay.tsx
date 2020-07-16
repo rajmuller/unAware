@@ -60,12 +60,15 @@ const ModalOverlay: FC<ModalOverlayProps> = ({
   const animationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    disableBodyScroll(animationRef.current!);
-
+    if (show) {
+      disableBodyScroll(animationRef.current!);
+    } else {
+      clearAllBodyScrollLocks();
+    }
     return () => {
       clearAllBodyScrollLocks();
     };
-  }, []);
+  }, [show]);
 
   if (!show) {
     return null;

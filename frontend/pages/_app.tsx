@@ -4,7 +4,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { Provider } from "react-redux";
 
 import { setAccessToken } from "../utils/accessToken";
-import Layout from "../components/navigation/Layout";
+import Layout from "../components/Navigation/Layout";
 import { useApollo } from "../lib/apollo";
 import { useStore } from "../lib/redux";
 import Modals from "../components/overlay";

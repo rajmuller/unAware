@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 import { FieldAttributes, useField } from "formik";
-import styled from "styled-components";
 
-type FieldProps = { label: string } & FieldAttributes<{}>;
+type FieldProps = { label: string; name?: string } & FieldAttributes<{}>;
+type CheckBoxProps = { name?: string };
 
 export const TextInput: FC<FieldProps> = ({ label, ...props }) => {
   // useField() returns [formik.ge), formik.getFieldMeta()]
@@ -13,13 +13,13 @@ export const TextInput: FC<FieldProps> = ({ label, ...props }) => {
     <>
       <label htmlFor={id || name}>{label}</label>
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <input {...field} {...(props as any)} />
       {meta.touched && meta.error ? <div>{meta.error}</div> : null}
+      <input {...field} {...(props as any)} />
     </>
   );
 };
 
-export const CheckBox: FC = ({ children, ...props }) => {
+export const CheckBox: FC<CheckBoxProps> = ({ children, ...props }) => {
   // We need to tell useField what type of input this is
   // since React treats radios and checkboxes differently
   // than inputs/select/textarea.
@@ -37,18 +37,6 @@ export const CheckBox: FC = ({ children, ...props }) => {
   );
 };
 
-const StyledSelect = styled.select`
-  //asd
-`;
-
-const StyledErrorMessage = styled.div`
-  //asd
-`;
-
-const StyledLabel = styled.label`
-  //asd
-`;
-
 export const Select: FC<FieldProps> = ({ label, ...props }) => {
   // @ts-ignore
   const [field, meta] = useField(props);
@@ -56,12 +44,10 @@ export const Select: FC<FieldProps> = ({ label, ...props }) => {
   const { id, name } = props as any;
   return (
     <>
-      <StyledLabel htmlFor={id || name}>{label}</StyledLabel>
+      <label htmlFor={id || name}>{label}</label>
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <StyledSelect {...field} {...(props as any)} />
-      {meta.touched && meta.error ? (
-        <StyledErrorMessage>{meta.error}</StyledErrorMessage>
-      ) : null}
+      <select {...field} {...(props as any)} />
+      {meta.touched && meta.error ? <div>{meta.error}</div> : null}
     </>
   );
 };

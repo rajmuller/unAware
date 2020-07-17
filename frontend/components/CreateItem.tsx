@@ -1,17 +1,11 @@
 import { FC, SyntheticEvent, useCallback, useState } from "react";
-import { useRouter } from "next/router";
 import styled, { keyframes } from "styled-components";
+import * as Yup from "yup";
 
-import {
-  // ItemsDocument,
-  // ItemsQuery,
-  // NumberOfItemsDocument,
-  // NumberOfItemsQuery,
-  useCreateItemMutation,
-} from "../graphql/generated/graphql";
-import { usePersistentState } from "../hooks";
+import { Form, Formik } from "formik";
+import { TextInput } from "./FormFields";
 
-const loading = keyframes`
+const loadingFrame = keyframes`
   from {
     background-position: 0 0;
     /* rotate: 0; */
@@ -23,7 +17,7 @@ const loading = keyframes`
   }
 `;
 
-const FormStyle = styled.form`
+const StyledForm = styled(Form)`
   box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.05);
   background: rgba(0, 0, 0, 0.02);
   border: 5px solid white;
@@ -31,10 +25,7 @@ const FormStyle = styled.form`
   font-size: 1.5rem;
   line-height: 1.5;
   font-weight: 600;
-  label {
-    display: block;
-    margin-bottom: 1rem;
-  }
+
   input,
   textarea,
   select {
@@ -42,78 +33,108 @@ const FormStyle = styled.form`
     padding: 0.5rem;
     font-size: 1rem;
     border: 1px solid black;
+    margin-bottom: 1rem;
     &:focus {
       outline: 0;
       border-color: ${(props) => props.theme.red};
     }
   }
-  button,
-  input[type="submit"] {
-    width: auto;
-    background: red;
-    color: white;
-    border: 0;
-    font-size: 2rem;
-    font-weight: 600;
-    padding: 0.5rem 1.2rem;
-  }
-  fieldset {
-    border: 0;
-    padding: 0;
 
-    &[disabled] {
-      opacity: 0.5;
-    }
-    &::before {
-      height: 10px;
-      content: "";
-      display: block;
-      background-image: linear-gradient(
-        to right,
-        #ff3019 0%,
-        #e2b04a 50%,
-        #ff3019 100%
-      );
-    }
-    &[aria-busy="true"]::before {
-      background-size: 50% auto;
-      animation: ${loading} 0.5s linear infinite;
-    }
+  label {
+    display: block;
+  }
+
+  div {
+    color: ${({ theme }) => theme.red};
+    font-size: 1rem;
   }
 `;
 
+const Fieldset = styled.fieldset`
+  border: 0;
+  padding: 0;
+
+  &[disabled] {
+    opacity: 0.5;
+  }
+  &::before {
+    height: 10px;
+    margin-bottom: 1rem;
+    content: "";
+    display: block;
+    background-image: linear-gradient(
+      to right,
+      #ff3019 0%,
+      #e2b04a 50%,
+      #ff3019 100%
+    );
+  }
+  &[aria-busy="true"]::before {
+    background-size: 50% auto;
+    animation: ${loadingFrame} 0.5s linear infinite;
+  }
+`;
+
+const Button = styled.button`
+  width: auto;
+  background: red;
+  color: white;
+  border: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  padding: 0.5rem 1.2rem;
+`;
+
+// type ThumbnailProps = {
+//   file: any;
+// };
+//
+// const Thumbnail: FC<ThumbnailProps> = ({ file }) => {
+//   const [loading, setLoading] = useState(false);
+//   const [thumbnail, setThumbnail] = useState<string | ArrayBuffer | null>(null);
+//
+//   if (!file) {
+//     return null;
+//   }
+//
+//   const reader = new FileReader();
+//
+//   reader.onloadend = () => {
+//     setThumbnail(reader.result);
+//   };
+//
+//   reader.readAsDataURL(file);
+// };
+
+const validationSchema = Yup.object({
+  title: Yup.string()
+    .min(3, "Min 3 characters")
+    .max(25, "Max 25 characters")
+    .required("Required"),
+  description: Yup.string()
+    .min(5, "Min 5 characters")
+    .max(120, "Max 120 characters")
+    .required("Required"),
+  price: Yup.number()
+    .min(100, "Min 100 cents")
+    .max(10000000, "Max 10.000.000")
+    .required("Required"),
+  image: Yup.string().required("Required"),
+});
 type CreateItemProps = {};
 
 const CreateItem: FC<CreateItemProps> = () => {
-  const router = useRouter();
-  const [createItem, { loading }] = useCreateItemMutation();
-  const [form, setForm] = usePersistentState("sellForm", {
-    title: "",
-    description: "",
-    price: 0,
-  });
-  const [image, setImage] = useState("");
-  const [largeImage, setLargeImage] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
+  const [largeImageUrl, setlargeImageUrl] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
+  // const [createItem, { loading }] = useCreateItemMutation();
 
-  const handleChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      const dynamicValue = name === "price" ? parseFloat(value) : value;
-      setForm({
-        ...form,
-        [name]: dynamicValue,
-      });
-    },
-    [form, setForm]
-  );
-
-  const handleUploadImage = useCallback(async (e) => {
+  const handleUploadImage = useCallback(async (e, setFieldValue) => {
     const { files } = e.target;
     if (!files) {
       return;
     }
-    setIsUploading(true);
+    setUploadingImage(true);
     const data = new FormData();
     data.append("file", files[0]);
     data.append("upload_preset", "unAware");
@@ -124,111 +145,74 @@ const CreateItem: FC<CreateItemProps> = () => {
       { method: "POST", body: data }
     );
     if (!res.ok) {
-      setIsUploading(false);
+      setUploadingImage(false);
       return;
     }
-    const file = await res.json();
-    if (file === "error") {
+    const uploadedFile = await res.json();
+    if (uploadedFile === "error") {
       return;
     }
-    setImage(file.secure_url);
-    setLargeImage(file.eager[0].secure_url);
-    setIsUploading(false);
+    setFieldValue("image", files[0].)
+    setImageUrl(uploadedFile.secure_url);
+    setlargeImageUrl(uploadedFile.eager[0].secure_url);
+    setUploadingImage(false);
   }, []);
 
-  const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
-    const { price, title, description } = form;
-    const res = await createItem({
-      variables: { price, title, description, image, largeImage },
-      // TODO: implement cache update
-      // update: (cache, { data }) => {
-      //   if (!data) {
-      //     return;
-      //   }
-      //
-      //   const numberOfItemsQuery = cache.readQuery<NumberOfItemsQuery>({
-      //     query: NumberOfItemsDocument,
-      //   });
-      //   cache.writeQuery<NumberOfItemsQuery>({
-      //     query: NumberOfItemsDocument,
-      //     data: {
-      //       numberOfItems: numberOfItemsQuery!.numberOfItems + 1,
-      //     },
-      //   });
-      //   const numberOfPages = Math.ceil(
-      //     numberOfItemsQuery!.numberOfItems / perPage
-      //   );
-      // },
-      // refetchQueries: [
-      //   () => {
-      //     return { query: ItemsDocument, variables: { take: 4, skip: 4 } };
-      //   },
-      // ],
-    });
-    if (res) {
-      localStorage.removeItem("sellForm");
-      await router.push("/item/[itemId]", `/item/${res.data?.createItem.id}`);
-    }
-  };
-
   return (
-    <FormStyle onSubmit={handleSubmit}>
-      <fieldset
-        disabled={loading || isUploading}
-        aria-busy={loading || isUploading}
-      >
-        <label htmlFor="title">
-          Title
-          <input
-            onChange={handleChange}
-            value={form.title}
-            type="text"
-            id="title"
-            name="title"
-            placeholder="title"
-            required
-          />
-        </label>
-        <label htmlFor="price ">
-          Price
-          <input
-            onChange={handleChange}
-            value={form.price === 0 ? "" : form.price}
-            type="number"
-            id="price"
-            name="price"
-            placeholder="0"
-            required
-          />
-        </label>
-        <label htmlFor="description">
-          Description
-          <input
-            onChange={handleChange}
-            value={form.description}
-            type="text"
-            id="description"
-            name="description"
-            placeholder="Enter A Description"
-            required
-          />
-        </label>
-        <label htmlFor="image">
-          Image
-          <input
-            onChange={handleUploadImage}
-            required
-            type="file"
-            id="image"
-            name="image"
-            placeholder="Upload Image"
-          />
-          {image && <img width={200} src={image} alt="Upload Preview" />}
-        </label>
-        <button type="submit">Submit</button>
-      </fieldset>
-    </FormStyle>
+    <Formik
+      initialValues={{
+        title: "",
+        description: "",
+        price: 0,
+        image: "",
+        largeImage: "",
+      }}
+      validationSchema={validationSchema}
+      onSubmit={(values, { setSubmitting }) => {
+        setSubmitting(true);
+        alert(JSON.stringify(values, null, 2));
+        setSubmitting(false);
+      }}
+    >
+      {({ setFieldValue, isSubmitting, values: { image } }) => (
+        <StyledForm>
+          <Fieldset
+            disabled={uploadingImage || isSubmitting}
+            aria-busy={uploadingImage || isSubmitting}
+          >
+            <TextInput
+              label="title"
+              name="title"
+              type="text"
+              placeholder="title"
+            />
+            <TextInput
+              label="price (cents)"
+              name="price"
+              type="number"
+              placeholder="price"
+            />
+            <TextInput
+              label="description"
+              name="description"
+              type="text"
+              placeholder="description"
+            />
+            <TextInput
+              label="image"
+              name="image"
+              type="file"
+              placeholder="upload image"
+              onChange={(e: SyntheticEvent) =>
+                handleUploadImage(e, setFieldValue)
+              }
+            />
+            {image && <img width={200} src={image} alt="Upload Preview" />}
+            <Button type="submit">Submit</Button>
+          </Fieldset>
+        </StyledForm>
+      )}
+    </Formik>
   );
 };
 
